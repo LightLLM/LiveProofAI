@@ -1,0 +1,15 @@
+node_modules
+.next
+dist
+.venv
+__pycache__
+*.pyc
+.env
+.env.local
+.env.*.local
+*.log
+.DS_Store
+infra/k8s/secrets.yaml
+.pytest_cache
+coverage
+.jest-cache

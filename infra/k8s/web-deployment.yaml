@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: liveproof-web
+  namespace: liveproof
+  labels:
+    app: liveproof-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: liveproof-web
+  template:
+    metadata:
+      labels:
+        app: liveproof-web
+    spec:
+      containers:
+        - name: web
+          image: liveproof-web:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NEXT_PUBLIC_API_URL
+              value: "https://api.liveproof.example.com"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: liveproof-web
+  namespace: liveproof
+spec:
+  selector:
+    app: liveproof-web
+  ports:
+    - port: 3000
+      targetPort: 3000
+  type: ClusterIP

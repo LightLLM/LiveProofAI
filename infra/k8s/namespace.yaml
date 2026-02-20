@@ -1,0 +1,6 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: liveproof
+  labels:
+    app.kubernetes.io/name: liveproof-ai

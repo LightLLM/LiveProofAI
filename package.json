@@ -1,0 +1,23 @@
+{
+  "name": "liveproof-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "LiveProof AI - Citation-backed technical Q&A with Claim Graph and reliability scoring",
+  "scripts": {
+    "dev": "pnpm run dev --parallel -r --filter \"./apps/*\"",
+    "dev:web": "pnpm --filter web dev",
+    "dev:api": "cd apps/api && uvicorn main:app --reload",
+    "build": "pnpm run build -r --filter \"./apps/*\" --filter \"./packages/*\"",
+    "build:web": "pnpm --filter web build",
+    "start:web": "pnpm --filter web start",
+    "test": "npm run test:api",
+    "test:api": "cd apps/api && python -m pytest tests -v --tb=short",
+    "test:web": "cd apps/web && npm test",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "pnpm@9.0.0"
+}

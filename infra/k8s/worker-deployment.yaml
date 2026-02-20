@@ -1,0 +1,44 @@
+# GPU worker (optional). Enable on LKE with NVIDIA device plugin.
+# kubectl apply -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v0.14.0/nvidia-device-plugin.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: liveproof-worker
+  namespace: liveproof
+  labels:
+    app: liveproof-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: liveproof-worker
+  template:
+    metadata:
+      labels:
+        app: liveproof-worker
+    spec:
+      # nodeSelector:
+      #   linode.com/gpu: "true"
+      containers:
+        - name: worker
+          image: liveproof-worker:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+          env:
+            - name: CUDA_VISIBLE_DEVICES
+              value: "0"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: liveproof-worker
+  namespace: liveproof
+spec:
+  selector:
+    app: liveproof-worker
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: ClusterIP

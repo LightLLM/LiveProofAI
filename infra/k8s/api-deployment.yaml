@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: liveproof-api
+  namespace: liveproof
+  labels:
+    app: liveproof-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: liveproof-api
+  template:
+    metadata:
+      labels:
+        app: liveproof-api
+    spec:
+      containers:
+        - name: api
+          image: liveproof-api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          env:
+            - name: YOU_STUB
+              value: "true"
+            - name: SANITY_DATASET
+              valueFrom:
+                configMapKeyRef:
+                  name: liveproof-config
+                  key: SANITY_DATASET
+            - name: YOU_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: liveproof-secrets
+                  key: YOU_API_KEY
+                  optional: true
+            - name: SANITY_PROJECT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: liveproof-secrets
+                  key: SANITY_PROJECT_ID
+                  optional: true
+            - name: SANITY_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: liveproof-secrets
+                  key: SANITY_TOKEN
+                  optional: true
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: liveproof-api
+  namespace: liveproof
+spec:
+  selector:
+    app: liveproof-api
+  ports:
+    - port: 8000
+      targetPort: 8000
+  type: ClusterIP

@@ -1,0 +1,3 @@
+# Minimal: no GPU deps for smaller image; use CUDA base + torch with CUDA in production
+flask==3.0.0
+# sentence-transformers  # uncomment for GPU embeddings; increases image size
